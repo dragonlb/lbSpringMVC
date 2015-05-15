@@ -1,5 +1,7 @@
 package lbts.com.web;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
@@ -14,11 +16,26 @@ import java.util.List;
  */
 public class MybatisGenerateTs {
 
-    public static void main(String[] args){
+    public static void generator_oracle(){
+        File configFile = new File("E:\\Lb\\GitHub\\lbSpringMVC\\src\\main\\resources\\bankDB.xml");
+        generator(configFile);
+    }
+
+    public static void generator_mysql(){
+        File configFile = new File("E:\\Lb\\GitHub\\lbSpringMVC\\src\\main\\resources\\bankMySql.xml");
+        generator(configFile);
+    }
+
+    @Test
+    public void ddtt(){
+        System.out.println("xxxxxxxxxxxxxxxx");
+    }
+
+    private static void generator(File genXml){
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
         try {
-            File configFile = new File("E:\\Lb\\GitHub\\lbSpringMVC\\src\\main\\resources\\bankDB.xml");
+            File configFile = genXml;
             ConfigurationParser cp = new ConfigurationParser(warnings);
             Configuration config = cp.parseConfiguration(configFile);
             DefaultShellCallback callback = new DefaultShellCallback(overwrite);
@@ -27,5 +44,11 @@ public class MybatisGenerateTs {
         }catch (Exception ex){
             ex.printStackTrace();
         }
+
+    }
+
+    public static void main(String[] args){
+//        generator_oracle();
+        generator_mysql();
     }
 }
