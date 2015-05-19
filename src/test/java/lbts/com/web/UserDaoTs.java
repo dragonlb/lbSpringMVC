@@ -29,7 +29,7 @@ public class UserDaoTs {
         User oneUser = new User();
         oneUser.setCode("001");
         oneUser.setName("Lb");
-        oneUser.setDesp("测试描述");
+        oneUser.setDesp("测试描述2");
         oneUser.setSex(1);
         oneUser.setAddress("上海松江");
         userDao.insert(oneUser);
