@@ -47,17 +47,17 @@
 -->
 
 <!--
-        <table tableName="ORD_ORDER_ITEM" domainObjectName="OrdOrderItem"
+        <table tableName="user" domainObjectName="User"
                enableInsert="true" enableSelectByPrimaryKey="true"
                enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
-            <generatedKey column="ORDER_ITEM_ID" sqlStatement="select SEQ_ORDER_ITEM_ID.nextval from dual" type="pre" ></generatedKey>
+            <generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" type="pre" ></generatedKey>
         </table>
 -->
 
-        <table tableName="user" domainObjectName="User"
+        <table tableName="ord_order" domainObjectName="OrdOrder"
                enableInsert="true" enableSelectByPrimaryKey="true"
                enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
                enableCountByExample="false" enableUpdateByExample="false"
