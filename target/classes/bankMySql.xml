@@ -63,7 +63,7 @@
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
-            <generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" type="pre" ></generatedKey>
+            <generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" type="post" identity="true" ></generatedKey>
         </table>
 
     </context>
