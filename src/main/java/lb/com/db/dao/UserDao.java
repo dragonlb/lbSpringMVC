@@ -1,12 +1,15 @@
 package lb.com.db.dao;
 
-/**
- * Created by libing on 2015/5/13.
- */
-public class UserDao extends MyBatisBaseDao {
+import lb.com.db.bo.User;
+import org.springframework.stereotype.Repository;
 
-    public UserDao(){
+/**
+ * Created by libing on 2015/5/19.
+ */
+@Repository
+public class UserDao extends MyBatisBaseDao<User> {
+
+    public UserDao() {
         super("USER");
     }
-
 }

@@ -34,7 +34,7 @@
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="map" targetProject="lbSpringMVC/src/main/resources">
+        <sqlMapGenerator targetPackage="lb.com.db.map" targetProject="lbSpringMVC/src/main/java">
             <!-- This property is used to select whether MyBatis Generator will generate different Java packages for
       the objects based on the catalog and schema of the introspected table -->
             <property name="enableSubPackages" value="false"/>
