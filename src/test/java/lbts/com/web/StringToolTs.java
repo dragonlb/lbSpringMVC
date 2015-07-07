@@ -7,6 +7,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by libing on 2015/5/11.
  */
@@ -21,5 +24,17 @@ public class StringToolTs {
     public void logTest(){
         LOG.debug("Hello LOG of debug.....");
         System.out.println("Hello sysout....");
+    }
+
+    @Test
+    public void stringTest(){
+        String[] ss = {"a", "b", "c", "d"};
+        List<String> stList = new ArrayList<String>();
+        stList.add("a");
+        stList.add("b");
+        stList.add("c");
+        stList.add("d");
+        System.out.println(ss);
+        System.out.println(stList);
     }
 }
