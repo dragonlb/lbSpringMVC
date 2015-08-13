@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by libing on 2015/5/11.
@@ -36,5 +37,23 @@ public class StringToolTs {
         stList.add("d");
         System.out.println(ss);
         System.out.println(stList);
+    }
+
+    @Test
+    public void charArray(){
+        String ts = "0123456789abcdefghijklmnopqrstuvwxyz";
+        char[] cs = ts.toCharArray();
+        char[] cs2 = ts.toUpperCase().toCharArray();
+        char[] aimCs = new char[4];
+        Random random = new Random();
+        for(int i=0;i<aimCs.length;i++){
+            if(random.nextBoolean()){
+                aimCs[i] = cs2[random.nextInt(cs.length)];
+            }
+            else{
+                aimCs[i] = cs[random.nextInt(cs.length)];
+            }
+        }
+        System.out.println(new String(aimCs));
     }
 }
