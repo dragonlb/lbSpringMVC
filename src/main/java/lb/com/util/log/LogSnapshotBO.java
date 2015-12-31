@@ -8,8 +8,8 @@ import java.util.*;
  */
 public class LogSnapshotBO {
 
-    private static final int MSG_SIZE = 10;
-    private static final int MAX_SUB_SIZE = 3;
+    private static final int MSG_SIZE = 100;
+    private static final int MAX_SUB_SIZE = 100;
     public static final String ALIVE = "ALIVE";
 
     //存活模式  ALIVE: 活动模式    DEAD: 死亡模式
