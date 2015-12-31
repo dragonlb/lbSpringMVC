@@ -8,12 +8,15 @@ import java.util.*;
  */
 public class LogSnapshotBO {
 
-    private static final int MSG_SIZE = 100;
-    private static final int MAX_SUB_SIZE = 100;
+    private static final int MSG_SIZE = 10;
+    private static final int MAX_SUB_SIZE = 3;
     public static final String ALIVE = "ALIVE";
 
     //存活模式  ALIVE: 活动模式    DEAD: 死亡模式
     private String aliveMode;
+
+    //父级快照
+    private LogSnapshotBO preBo;
 
     //快照主键
     private String key;
@@ -37,7 +40,10 @@ public class LogSnapshotBO {
     private List<LogLineBO> msgList = new ArrayList<LogLineBO>();
 
     //日志溢出数量
-    private Long oom_count = 0L;
+    private Long oom_msgs = 0L;
+
+    //
+    private Long oom_subs = 0L;
 
     //子日志快照
     private Map<String, LogSnapshotBO> subBoMap = new HashMap<String, LogSnapshotBO>();
@@ -99,9 +105,21 @@ public class LogSnapshotBO {
             subKey = UUID.randomUUID().toString();
             subBo = new LogSnapshotBO(subKey);
         }
-        subBo.setLevel(this.getLevel()+1);
+        subBo.setPreBo(this);
+        subBo.setLevel(this.getLevel() + 1);
         subBo.setAliveMode(this.getAliveMode());
-        if(this.sizeOfSubs()<=MAX_SUB_SIZE) {       //超过最大值，将不入内存
+        LogSnapshotBO releaseBo = null;
+        LogSnapshotBO rootBo = this.findRootBo();
+        while(rootBo.sizeOfSubs()>MAX_SUB_SIZE){//尝试释放
+            releaseBo = rootBo.releaseSub();
+        }
+        if(releaseBo!=null && releaseBo.getKey().equals(this.getKey())){//如果移除的是当前BO
+            LogSnapshotBO preBo = this.getPreBo();
+            subBo.setPreBo(preBo);
+            preBo.getSubBoMap().put(subBo.getKey(), subBo);
+            preBo.setOom_subs(preBo.getOom_subs()+this.getOom_subs());
+        }
+        else {
             this.subBoMap.put(subBo.getKey(), subBo);
         }
         return subBo.start();
@@ -144,34 +162,40 @@ public class LogSnapshotBO {
         LogLineBO logLineBO = new LogLineBO(now, msg, args);
         if(!this.isAlive() || msg==null)   return logLineBO.getMsgLine();
         if(this.msgList==null)  this.msgList = new ArrayList<LogLineBO>();
-        long size = this.sizeOfMsg();
+        LogSnapshotBO rootBo = this.findRootBo();
+        long size = rootBo.sizeOfMsg();
         if(size>MSG_SIZE) {   //总空间已满，需要释放
             do{
-                this.releaseMsg();
-            }while(this.sizeOfMsg()>MSG_SIZE);
+                rootBo.releaseMsg();
+            }while(rootBo.sizeOfMsg()>MSG_SIZE);
         }
         this.msgList.add(logLineBO);
         return logLineBO.getMsgLine();
     }
 
+    public LogSnapshotBO findRootBo(){
+        if(this.getPreBo()==null || this.getPreBo().getKey().equals(this.getKey())){
+            return this;
+        }
+        return this.getPreBo().findRootBo();
+    }
+
     private long releaseMsg(){
         long releaseSize = 0;
-        //无子快照
-        if(this.getSubBoMap()==null || this.getSubBoMap().isEmpty()){
-            if(this.getMsgList()!=null && this.getMsgList().size()>0){
-                int beforeSize = this.getMsgList().size();
-                this.msgList.remove(0);
-                releaseSize = beforeSize - this.getMsgList().size();
-                this.oom_count += releaseSize;
-            }
-        }
-        else{
-            for(LogSnapshotBO subBo: this.getSubBoMap().values()){
-                releaseSize =subBo.releaseMsg();
-                if(releaseSize>0){
+        if(this.getSubBoMap()!=null && !this.getSubBoMap().isEmpty()) {
+            for (LogSnapshotBO subBo : this.getSubBoMap().values()) {
+                releaseSize = subBo.releaseMsg();
+                if (releaseSize > 0) {
                     break;
                 }
             }
+        }
+        if(releaseSize>0)   return releaseSize;
+        if(this.getMsgList()!=null && this.getMsgList().size()>0){
+            int beforeSize = this.getMsgList().size();
+            this.getMsgList().remove(0);
+            releaseSize = beforeSize - this.getMsgList().size();
+            this.oom_msgs += releaseSize;
         }
         return releaseSize;
     }
@@ -187,14 +211,46 @@ public class LogSnapshotBO {
         return retSize;
     }
 
+    /**
+     * 子快照数量（含自己）
+     * @return
+     */
     public long sizeOfSubs(){
-        long retSize = 1;
+        long retSize = 1;//含自己
         if(this.getSubBoMap()!=null && !this.getSubBoMap().isEmpty()){
             for(LogSnapshotBO subBo: this.getSubBoMap().values()){
                 retSize += subBo.sizeOfSubs();
             }
         }
         return retSize;
+    }
+
+    public LogSnapshotBO releaseSub(){
+        LogSnapshotBO retBo = null;
+        if(this.getSubBoMap()==null || this.getSubBoMap().isEmpty()){
+            return null;
+        }
+        for(LogSnapshotBO subBo: this.getSubBoMap().values()){
+            if(subBo.isLeafBo()){
+                this.setOom_subs(this.getOom_subs() + 1 + subBo.getOom_subs());
+                this.getSubBoMap().remove(subBo.getKey());
+                retBo = subBo;
+            }
+            else {
+                retBo = subBo.releaseSub();
+            }
+            if(retBo!=null){
+                break;
+            }
+        }
+        return retBo;
+    }
+
+    private boolean isLeafBo(){
+        if(this.getSubBoMap()!=null && this.getSubBoMap().values().size()>0){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -214,8 +270,15 @@ public class LogSnapshotBO {
             levelSpan += "-";
         }
         retBuf.append((this.getLevel()>0?"|":"")+levelSpan+"# "+this.getKey()+" ("+this.getStepNano()/1000000+"){\r\n");
-        if(this.getOom_count()>0){
-            retBuf.append("|"+levelSpan+"---- ... ...RELEASED MESSAGES ["+this.getOom_count()+"] .\r\n");
+        String tempSt = "";
+        if(this.getOom_subs()>0){
+            tempSt += "SUBS ["+this.getOom_subs()+"]  ";
+        }
+        if(this.getOom_msgs()>0){
+            tempSt += "MESSAGES ["+this.getOom_msgs()+"]";
+        }
+        if(tempSt.length()>0){
+            retBuf.append("|"+levelSpan+"---- ... ...RELEASED "+tempSt+" .\r\n");
         }
         for(LogLineBO logLineBO: this.getMsgList()){
             retBuf.append("|"+levelSpan+"---- "+logLineBO.getProcessNano()/1000000+"  "+logLineBO.getMsgLine()+"\r\n");
@@ -233,7 +296,7 @@ public class LogSnapshotBO {
         StringBuffer retBuf = new StringBuffer();
         retBuf.append("\"key\":\""+this.getKey()+"\"");
         if(this.getStepNano()!=null)	retBuf.append(",\"stepMillisecond\":"+this.getStepNano()/1000000);
-        if(this.getOom_count()!=null && this.getOom_count().longValue()>0)	retBuf.append(",\"oom_count\":"+this.getOom_count());
+        if(this.getOom_msgs()!=null && this.getOom_msgs().longValue()>0)	retBuf.append(",\"oom_count\":"+this.getOom_msgs());
         if(getMsgList()!=null && getMsgList().size()>0){
             StringBuffer tempBuf = new StringBuffer();
             for(LogLineBO logLineBO: getMsgList()){
@@ -322,20 +385,36 @@ public class LogSnapshotBO {
         this.msgList = msgList;
     }
 
-    public Long getOom_count() {
-        return oom_count;
-    }
-
-    public void setOom_count(Long oom_count) {
-        this.oom_count = oom_count;
-    }
-
     public int getLevel() {
         return level;
     }
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public LogSnapshotBO getPreBo() {
+        return preBo;
+    }
+
+    public void setPreBo(LogSnapshotBO preBo) {
+        this.preBo = preBo;
+    }
+
+    public Long getOom_msgs() {
+        return oom_msgs;
+    }
+
+    public void setOom_msgs(Long oom_msgs) {
+        this.oom_msgs = oom_msgs;
+    }
+
+    public Long getOom_subs() {
+        return oom_subs;
+    }
+
+    public void setOom_subs(Long oom_subs) {
+        this.oom_subs = oom_subs;
     }
 
     private class LogLineBO{
