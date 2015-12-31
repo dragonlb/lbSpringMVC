@@ -48,4 +48,18 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>hessianService</servlet-name>
+        <servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+        <init-param>
+            <param-name>service-class</param-name>
+            <param-value>lb.com.hessian.impl.HessianTsServiceImpl</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>hessianService</servlet-name>
+        <url-pattern>/hessianService</url-pattern>
+    </servlet-mapping>
+
 </web-app>
