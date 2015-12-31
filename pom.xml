@@ -9,6 +9,11 @@
     <version>1.0-SNAPSHOT</version>
     <name>lbWeb</name>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
