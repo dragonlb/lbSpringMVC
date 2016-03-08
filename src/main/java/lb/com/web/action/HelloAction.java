@@ -45,6 +45,8 @@ public class HelloAction {
         if(name!=null) {
             retMap.put("name", name);
         }
+        Thread.sleep(3*60*1000);
+        System.out.println("after. "+name);
         return JSONArray.fromObject(retMap).toString();
     }
 }
