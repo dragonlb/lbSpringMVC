@@ -1,10 +1,12 @@
-package lb.dubbo.imp;
+package lb.com.dubbo.imp;
 
-import lb.dubbo.DubboService;
+import lb.com.dubbo.DubboService;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by libing on 2016/3/7.
  */
+@Service("dubboService")
 public class DubboServiceImpl implements DubboService{
 
     @Override

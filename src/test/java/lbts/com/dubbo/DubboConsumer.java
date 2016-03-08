@@ -2,7 +2,7 @@ package lbts.com.dubbo;
 
 import lb.com.dubbo.CalcDubboResult;
 import lb.com.dubbo.CalcDubboService;
-import lb.dubbo.DubboService;
+import lb.com.dubbo.DubboService;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
