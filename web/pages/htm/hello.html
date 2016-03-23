@@ -7,9 +7,22 @@
 <body>
     <div style="margin:20px auto 20px auto">Hello....</div>
 <hr>
-<form name="form1" action="/lbWeb/base/hello" method="post">
-    <input type="text" name="name" id="name" value="">
-    <input type="submit" name="submit" value="确定1">
-</form>
+    <form name="form1" action="/lbWeb/base/hello" method="post">
+        <input type="text" name="name" id="name" value="">
+        <input type="submit" name="submit" value="确定">
+    </form>
+    <hr/>
+    <form name="form2" action="/lbWeb/base/helloDate" method="post">
+        <input type="text" name="name" value="华中">
+        <input type="text" name="age" value="12">
+        <input type="text" name="birthDay" value="2008-01-01 12:01:01">
+        <input type="text" name="birthDay2" value="2008-01-01 12:02:02">
+        <br/>
+        son0:<input type="text" name="sons[0].birthDay" value="2000-01-01 12:02:02">
+        <br/>
+        son1:<input type="text" name="sons[1].birthDay" value="2001-01-01 12:02:02">
+        <br/>
+        <input type="submit" name="submit" value="确定2">
+    </form>
 </body>
 </html>
