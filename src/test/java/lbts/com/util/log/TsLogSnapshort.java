@@ -32,5 +32,21 @@ public class TsLogSnapshort {
         System.out.println(rootBo.toLogString());
     }
 
+    public static void test01(){
+        System.out.println("start");
+        try{
+            if( true ) {
+                throw new Exception("haha");
+            }
+        }catch( Exception ex){
+            System.out.println("error "+ex);
+            return;
+        }
+        System.out.println("end");
+    }
+
+    public static void main(String[] args){
+        test01();
+    }
 
 }

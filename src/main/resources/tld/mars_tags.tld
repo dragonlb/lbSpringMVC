@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<taglib >
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>m</short-name>
+    <uri>/mars-tags</uri>
+    <display-name>"Mars tag"</display-name>
+    <tag>
+        <name>tokenMars</name>
+        <tag-class>lb.com.web.comm.TokenTagSub</tag-class>
+    </tag>
+    <!-- Invoke 'Generate' action to add tags or functions -->
+
+</taglib>

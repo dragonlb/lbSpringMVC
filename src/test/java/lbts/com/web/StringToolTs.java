@@ -7,9 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by libing on 2015/5/11.
@@ -40,6 +38,13 @@ public class StringToolTs {
     }
 
     @Test
+    public void stringToIntTest(){
+        String s = "138.00";
+        Integer iVal = Double.valueOf(s).intValue();
+        System.out.println("iVal="+iVal);
+    }
+
+    @Test
     public void charArray(){
         String ts = "0123456789abcdefghijklmnopqrstuvwxyz";
         char[] cs = ts.toCharArray();
@@ -55,5 +60,19 @@ public class StringToolTs {
             }
         }
         System.out.println(new String(aimCs));
+    }
+
+    public static void main(String[] args) {
+        String s = "138.00";
+//        Integer iVal = Double.valueOf(s).intValue();
+//        iVal = Integer.valueOf(s);
+//        System.out.println("iVal="+iVal);
+//        Date start = new Date();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(new Date().getTime()-start.getTime());
     }
 }

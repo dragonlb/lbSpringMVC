@@ -1,5 +1,6 @@
 package lb.com.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +15,15 @@ public class DateUtil {
         if (date != null) {
             SimpleDateFormat f = new SimpleDateFormat(format==null?YYYYMMDDHHMMSS:format);
             return f.format(date);
+        } else {
+            return null;
+        }
+    }
+
+    public static Date parseDate(String dateSt, String format) throws ParseException {
+        if (dateSt != null) {
+            SimpleDateFormat f = new SimpleDateFormat(format==null?YYYYMMDDHHMMSS:format);
+            return f.parse(dateSt);
         } else {
             return null;
         }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="rest-default-nsso" extends="convertion-default">
+        <interceptors>
+            <!-- 基于 paramsPrepareParamsStack ,增加store intercepter 保证actionMessage在redirect后也不会丢失 -->
+            <interceptor name="tokenMars" class="lb.com.web.comm.TokenInterceptorSub"></interceptor>
+            <interceptor-stack name="defaultStack">
+                <interceptor-ref name="store">
+                    <param name="operatorMode">AUTOMATIC</param>
+                </interceptor-ref>
+                <interceptor-ref name="paramsPrepareParamsStack"></interceptor-ref>
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="defaultStack"></default-interceptor-ref>
+    </package>
+    
+</struts>

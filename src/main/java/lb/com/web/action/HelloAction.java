@@ -3,6 +3,7 @@ package lb.com.web.action;
 import lb.com.util.DateUtil;
 import lb.com.web.action.vo.HelloVo;
 import net.sf.json.JSONArray;
+import org.apache.ibatis.plugin.Intercepts;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,14 @@ public class HelloAction {
         return JSONArray.fromObject(retMap).toString();
     }
 
+//    @InterceptsRefs({
+//            @InterceptsRefs(value="tokenMars", params={"includeMethods", "verification"}),
+//            @InterceptsRefs(value="tokenMars", params={"includeMethods", "verifyCode"}),
+//            @InterceptsRefs("defaultStack")
+//    })
+    public void fff(){
+
+    }
 
     @ResponseBody
     @RequestMapping(value="/helloDate",method= RequestMethod.POST)
